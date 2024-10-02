@@ -4,8 +4,12 @@ import "./config";
 import { db } from "./db/setup";
 import { shortCodes } from "./db/schema";
 import { eq } from "drizzle-orm";
+import ShortUniqueId from "short-unique-id";
+
+type Record = typeof shortCodes.$inferSelect;
 
 const app = new Hono();
+const { randomUUID } = new ShortUniqueId({ length: 10 });
 
 app.get("/", (c) => {
 	return c.text("Hello Hono!");
@@ -45,9 +49,30 @@ app.post("/shorten-url", async (c) => {
 	try {
 		const { destination, customShortCode, password, expirationDate } =
 			await c.req.json();
+		const shortCode = randomUUID();
+		const record: Omit<Record, "createdAt"> = {
+			shortCode,
+			destination,
+			password: null,
+			expirationDate: null,
+		};
 
-		// hash password
-		// await db.insert(shortCodes).values({ shortCode: "test", destination });
+		if (customShortCode) {
+			// check if customShortCode already exists
+			record.shortCode = customShortCode;
+		}
+
+		if (password) {
+			// hash password
+			record.password = password;
+		}
+
+		if (expirationDate) {
+            // validate date
+			record.expirationDate = new Date(expirationDate);
+		}
+
+		await db.insert(shortCodes).values(record);
 		return c.text("Created!", 201);
 	} catch (error) {
 		return c.text("Unexpected error occurred", 500);
