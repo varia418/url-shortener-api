@@ -10,7 +10,9 @@ import bcrypt from "bcryptjs";
 type Record = typeof shortCodes.$inferSelect;
 
 const app = new Hono();
-const { randomUUID } = new ShortUniqueId({ length: 10 });
+const { randomUUID, collisionProbability, uniqueness } = new ShortUniqueId({
+	length: 6,
+});
 
 app.get("/", (c) => {
 	return c.text("Hello Hono!");
@@ -56,7 +58,20 @@ app.post("/shorten-url", async (c) => {
 	try {
 		const { destination, customShortCode, password, expirationDate } =
 			await c.req.json();
-		const shortCode = randomUUID();
+		let shortCode: string;
+		let shortCodeExists = true;
+		do {
+			shortCode = randomUUID();
+			const records = await db
+				.select()
+				.from(shortCodes)
+				.where(eq(shortCodes.shortCode, shortCode));
+
+			if (records.length === 0) {
+				shortCodeExists = false;
+			}
+		} while (shortCodeExists);
+
 		const record: Omit<Record, "createdAt"> = {
 			shortCode,
 			destination,
