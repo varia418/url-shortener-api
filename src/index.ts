@@ -10,7 +10,7 @@ import bcrypt from "bcryptjs";
 type Record = typeof shortCodes.$inferSelect;
 
 const app = new Hono();
-const { randomUUID, collisionProbability, uniqueness } = new ShortUniqueId({
+const { randomUUID } = new ShortUniqueId({
 	length: 6,
 });
 
@@ -66,8 +66,19 @@ app.post("/shorten-url", async (c) => {
 			expirationDate: null,
 		};
 
+		if (!destination) {
+			return c.text("Destination URL is required", 400);
+		} else {
+			const expression =
+				/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/gi;
+			const regex = new RegExp(expression);
+			if (!regex.test(destination)) {
+				return c.text("Invalid URL", 400);
+			}
+		}
+
 		if (customShortCode) {
-            // check if custom short code already exists
+			// check if custom short code already exists
 			const records = await db
 				.select()
 				.from(shortCodes)
