@@ -5,6 +5,7 @@ import { db } from "./db/setup";
 import { shortCodes } from "./db/schema";
 import { eq } from "drizzle-orm";
 import ShortUniqueId from "short-unique-id";
+import bcrypt from "bcryptjs";
 
 type Record = typeof shortCodes.$inferSelect;
 
@@ -63,12 +64,13 @@ app.post("/shorten-url", async (c) => {
 		}
 
 		if (password) {
-			// hash password
-			record.password = password;
+			const salt = await bcrypt.genSalt(10);
+			const hash = await bcrypt.hash(password, salt);
+			record.password = hash;
 		}
 
 		if (expirationDate) {
-            // validate date
+			// validate date
 			record.expirationDate = new Date(expirationDate);
 		}
 
