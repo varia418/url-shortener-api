@@ -19,11 +19,23 @@ app.get("/destination", async (c) => {
 			.from(shortCodes)
 			.where(eq(shortCodes.shortCode, shortCode));
 
-		if (records.length < 1) {
+		if (records.length === 0) {
 			return c.text("Short code not found", 404);
 		}
 
-		return c.json({ destination: records[0].destination });
+		const record = records[0];
+
+		if (record.expirationDate && record.expirationDate < new Date()) {
+			return c.text("Short code expired", 410);
+		}
+
+		if (record.password) {
+			if (record.password !== c.req.query("password")) {
+				return c.text("Wrong password", 401);
+			}
+		}
+
+		return c.json({ destination: record.destination });
 	} catch (error) {
 		return c.text("Unexpected error occurred", 500);
 	}
@@ -34,6 +46,7 @@ app.post("/shorten-url", async (c) => {
 		const { destination, customShortCode, password, expirationDate } =
 			await c.req.json();
 
+		// hash password
 		// await db.insert(shortCodes).values({ shortCode: "test", destination });
 		return c.text("Created!", 201);
 	} catch (error) {
