@@ -1,14 +1,19 @@
 {
-  "name": "url-shortener-api",
-  "scripts": {
-    "dev": "tsx watch src/index.ts"
-  },
-  "dependencies": {
-    "@hono/node-server": "^1.13.1",
-    "hono": "^4.6.3"
-  },
-  "devDependencies": {
-    "@types/node": "^20.11.17",
-    "tsx": "^4.7.1"
-  }
+	"name": "url-shortener-api",
+	"scripts": {
+		"dev": "tsx watch src/index.ts",
+		"db:generate": "drizzle-kit generate",
+		"db:migrate": "drizzle-kit migrate"
+	},
+	"dependencies": {
+		"@hono/node-server": "^1.13.1",
+		"drizzle-orm": "^0.33.0",
+		"hono": "^4.6.3",
+		"mysql2": "^3.11.3"
+	},
+	"devDependencies": {
+		"@types/node": "^20.11.17",
+		"drizzle-kit": "^0.24.2",
+		"tsx": "^4.7.1"
+	}
 }

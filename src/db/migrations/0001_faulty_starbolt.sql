@@ -1,0 +1,1 @@
+ALTER TABLE `shortcodes` MODIFY COLUMN `password` varchar(255);
