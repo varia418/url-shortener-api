@@ -58,30 +58,41 @@ app.post("/shorten-url", async (c) => {
 	try {
 		const { destination, customShortCode, password, expirationDate } =
 			await c.req.json();
-		let shortCode: string;
-		let shortCodeExists = true;
-		do {
-			shortCode = randomUUID();
-			const records = await db
-				.select()
-				.from(shortCodes)
-				.where(eq(shortCodes.shortCode, shortCode));
-
-			if (records.length === 0) {
-				shortCodeExists = false;
-			}
-		} while (shortCodeExists);
 
 		const record: Omit<Record, "createdAt"> = {
-			shortCode,
 			destination,
+			shortCode: "",
 			password: null,
 			expirationDate: null,
 		};
 
 		if (customShortCode) {
-			// check if customShortCode already exists
+            // check if custom short code already exists
+			const records = await db
+				.select()
+				.from(shortCodes)
+				.where(eq(shortCodes.shortCode, customShortCode));
+
+			if (records.length > 0) {
+				return c.text("Custom short code already exists", 400);
+			}
+
 			record.shortCode = customShortCode;
+		} else {
+			let shortCode: string;
+			let shortCodeExists = true;
+			do {
+				shortCode = randomUUID();
+				const records = await db
+					.select()
+					.from(shortCodes)
+					.where(eq(shortCodes.shortCode, shortCode));
+
+				if (records.length === 0) {
+					shortCodeExists = false;
+				}
+			} while (shortCodeExists);
+			record.shortCode = shortCode;
 		}
 
 		if (password) {
