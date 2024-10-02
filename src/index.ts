@@ -60,7 +60,7 @@ app.post("/shorten-url", async (c) => {
 			await c.req.json();
 
 		const record: Omit<Record, "createdAt"> = {
-			destination,
+			destination: "",
 			shortCode: "",
 			password: null,
 			expirationDate: null,
@@ -72,12 +72,19 @@ app.post("/shorten-url", async (c) => {
 			const expression =
 				/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/gi;
 			const regex = new RegExp(expression);
+
 			if (!regex.test(destination)) {
 				return c.text("Invalid URL", 400);
 			}
+
+			record.destination = destination;
 		}
 
 		if (customShortCode) {
+			if (customShortCode.length > 255) {
+				return c.text("Custom short code is too long", 400);
+			}
+
 			// check if custom short code already exists
 			const records = await db
 				.select()
