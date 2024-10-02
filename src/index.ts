@@ -35,7 +35,13 @@ app.get("/destination", async (c) => {
 		}
 
 		if (record.password) {
-			if (record.password !== c.req.query("password")) {
+			const password = c.req.query("password") ?? "";
+			const validPassword = await bcrypt.compare(
+				password,
+				record.password
+			);
+
+			if (!validPassword) {
 				return c.text("Wrong password", 401);
 			}
 		}
