@@ -1,5 +1,6 @@
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
+import { cors } from "hono/cors";
 import "./config";
 import { db } from "./db/setup";
 import { shortCodes } from "./db/schema";
@@ -13,6 +14,8 @@ const app = new Hono();
 const { randomUUID } = new ShortUniqueId({
 	length: 6,
 });
+
+app.use("*", cors());
 
 app.get("/", (c) => {
 	return c.text("Hello Hono!");
