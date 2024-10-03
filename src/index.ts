@@ -70,10 +70,11 @@ app.post("/shorten-url", async (c) => {
 			return c.text("Destination URL is required", 400);
 		} else {
 			const expression =
-				/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/gi;
+				/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/gi;
 			const regex = new RegExp(expression);
+			const matches = destination.match(regex);
 
-			if (!regex.test(destination)) {
+			if (matches === null || matches.length !== 1) {
 				return c.text("Invalid URL", 400);
 			}
 
