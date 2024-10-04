@@ -15,6 +15,13 @@
       "when": 1727857112635,
       "tag": "0001_faulty_starbolt",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1728014616913,
+      "tag": "0002_romantic_susan_delgado",
+      "breakpoints": true
     }
   ]
 }

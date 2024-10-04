@@ -1,0 +1,1 @@
+ALTER TABLE `shortcodes` MODIFY COLUMN `expirationDate` timestamp;
