@@ -107,7 +107,7 @@ app.post("/shorten-url", async (c) => {
 
 			record.shortCode = customShortCode;
 		} else {
-            // generate short code
+			// generate short code
 			let shortCode: string;
 			let shortCodeExists = true;
 
@@ -137,7 +137,7 @@ app.post("/shorten-url", async (c) => {
 		}
 
 		await db.insert(shortCodes).values(record);
-		return c.json({ message: "Created!" }, 201);
+		return c.json({ shortCode: record.shortCode }, 201);
 	} catch (error) {
 		console.error(error);
 		return c.json({ message: "Unexpected error occurred" }, 500);
