@@ -18,7 +18,7 @@ const { randomUUID } = new ShortUniqueId({
 app.use("*", cors());
 
 app.get("/", (c) => {
-	return c.text("Hello Hono!");
+	return c.json({ message: "Hello Hono!" });
 });
 
 app.get("/destination", async (c) => {
@@ -30,13 +30,13 @@ app.get("/destination", async (c) => {
 			.where(eq(shortCodes.shortCode, shortCode));
 
 		if (records.length === 0) {
-			return c.text("Short code not found", 404);
+			return c.json({ message: "Short code not found" }, 404);
 		}
 
 		const record = records[0];
 
 		if (record.expirationDate && record.expirationDate < new Date()) {
-			return c.text("Short code expired", 410);
+			return c.json({ message: "Short code expired" }, 410);
 		}
 
 		if (record.password) {
@@ -47,13 +47,13 @@ app.get("/destination", async (c) => {
 			);
 
 			if (!validPassword) {
-				return c.text("Wrong password", 401);
+				return c.json({ message: "Wrong password" }, 401);
 			}
 		}
 
 		return c.json({ destination: record.destination });
 	} catch (error) {
-		return c.text("Unexpected error occurred", 500);
+		return c.json({ message: "Unexpected error occurred" }, 500);
 	}
 });
 
@@ -70,7 +70,7 @@ app.post("/shorten-url", async (c) => {
 		};
 
 		if (!destination) {
-			return c.text("Destination URL is required", 400);
+			return c.json({ message: "Destination URL is required" }, 400);
 		} else {
 			const expression =
 				/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/gi;
@@ -78,7 +78,7 @@ app.post("/shorten-url", async (c) => {
 			const matches = destination.match(regex);
 
 			if (matches === null || matches.length !== 1) {
-				return c.text("Invalid URL", 400);
+				return c.json({ message: "Invalid URL" }, 400);
 			}
 
 			record.destination = destination;
@@ -86,7 +86,10 @@ app.post("/shorten-url", async (c) => {
 
 		if (customShortCode) {
 			if (customShortCode.length > 255) {
-				return c.text("Custom short code is too long", 400);
+				return c.json(
+					{ message: "Custom short code is too long" },
+					400
+				);
 			}
 
 			// check if custom short code already exists
@@ -96,7 +99,10 @@ app.post("/shorten-url", async (c) => {
 				.where(eq(shortCodes.shortCode, customShortCode));
 
 			if (records.length > 0) {
-				return c.text("Custom short code already exists", 400);
+				return c.json(
+					{ message: "Custom short code already exists" },
+					400
+				);
 			}
 
 			record.shortCode = customShortCode;
@@ -129,9 +135,9 @@ app.post("/shorten-url", async (c) => {
 		}
 
 		await db.insert(shortCodes).values(record);
-		return c.text("Created!", 201);
+		return c.json({ message: "Created!" }, 201);
 	} catch (error) {
-		return c.text("Unexpected error occurred", 500);
+		return c.json({ message: "Unexpected error occurred" }, 500);
 	}
 });
 
