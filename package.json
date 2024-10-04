@@ -3,7 +3,8 @@
 	"scripts": {
 		"dev": "tsx watch src/index.ts",
 		"db:generate": "drizzle-kit generate",
-		"db:migrate": "drizzle-kit migrate"
+		"db:migrate": "drizzle-kit migrate",
+        "db:drop": "drizzle-kit drop"
 	},
 	"dependencies": {
 		"@hono/node-server": "^1.13.1",

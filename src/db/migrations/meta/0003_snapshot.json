@@ -1,0 +1,69 @@
+{
+  "version": "5",
+  "dialect": "mysql",
+  "id": "87f8c7d2-6c30-4bad-a102-bd7f53784740",
+  "prevId": "6487bcf4-fa4e-483b-be46-bb4fc0e27b01",
+  "tables": {
+    "shortcodes": {
+      "name": "shortcodes",
+      "columns": {
+        "shortcode": {
+          "name": "shortcode",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "destination": {
+          "name": "destination",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "password": {
+          "name": "password",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "expirationDate": {
+          "name": "expirationDate",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp(3)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "now(3)"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "shortcodes_shortcode": {
+          "name": "shortcodes_shortcode",
+          "columns": [
+            "shortcode"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    }
+  },
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  },
+  "internal": {
+    "tables": {},
+    "indexes": {}
+  }
+}

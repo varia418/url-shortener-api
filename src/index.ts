@@ -137,6 +137,7 @@ app.post("/shorten-url", async (c) => {
 		await db.insert(shortCodes).values(record);
 		return c.json({ message: "Created!" }, 201);
 	} catch (error) {
+		console.error(error);
 		return c.json({ message: "Unexpected error occurred" }, 500);
 	}
 });
