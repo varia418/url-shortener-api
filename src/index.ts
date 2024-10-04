@@ -21,9 +21,10 @@ app.get("/", (c) => {
 	return c.json({ message: "Hello Hono!" });
 });
 
-app.get("/destination", async (c) => {
+app.post("/get-destination", async (c) => {
 	try {
-		const shortCode = c.req.query("shortCode") ?? "";
+		const { shortCode, password } = await c.req.json();
+
 		const records = await db
 			.select()
 			.from(shortCodes)
@@ -40,7 +41,6 @@ app.get("/destination", async (c) => {
 		}
 
 		if (record.password) {
-			const password = c.req.query("password") ?? "";
 			const validPassword = await bcrypt.compare(
 				password,
 				record.password
