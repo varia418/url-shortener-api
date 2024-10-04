@@ -107,8 +107,10 @@ app.post("/shorten-url", async (c) => {
 
 			record.shortCode = customShortCode;
 		} else {
+            // generate short code
 			let shortCode: string;
 			let shortCodeExists = true;
+
 			do {
 				shortCode = randomUUID();
 				const records = await db
@@ -120,6 +122,7 @@ app.post("/shorten-url", async (c) => {
 					shortCodeExists = false;
 				}
 			} while (shortCodeExists);
+
 			record.shortCode = shortCode;
 		}
 
@@ -130,7 +133,6 @@ app.post("/shorten-url", async (c) => {
 		}
 
 		if (expirationDate) {
-			// validate date
 			record.expirationDate = new Date(expirationDate);
 		}
 
