@@ -23,7 +23,7 @@ app.get("/", (c) => {
 
 app.post("/get-destination", async (c) => {
 	try {
-		const { shortCode, password } = await c.req.json();
+		const { shortCode, password = "" } = await c.req.json();
 
 		const records = await db
 			.select()
@@ -53,6 +53,7 @@ app.post("/get-destination", async (c) => {
 
 		return c.json({ destination: record.destination });
 	} catch (error) {
+		console.error("🚀 ~ app.post ~ error:", error)
 		return c.json({ message: "Unexpected error occurred" }, 500);
 	}
 });
