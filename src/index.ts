@@ -70,7 +70,13 @@ app.post("/shorten-url", async (c) => {
 		};
 
 		if (!destination) {
-			return c.json({ message: "Destination URL is required" }, 400);
+			return c.json(
+				{
+					field: "destination",
+					message: "Destination URL is required",
+				},
+				400
+			);
 		} else {
 			const expression =
 				/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/gi;
@@ -78,7 +84,10 @@ app.post("/shorten-url", async (c) => {
 			const matches = destination.match(regex);
 
 			if (matches === null || matches.length !== 1) {
-				return c.json({ message: "Invalid URL" }, 400);
+				return c.json(
+					{ field: "destination", message: "Invalid URL" },
+					400
+				);
 			}
 
 			record.destination = destination;
@@ -87,7 +96,10 @@ app.post("/shorten-url", async (c) => {
 		if (customShortCode) {
 			if (customShortCode.length > 255) {
 				return c.json(
-					{ message: "Custom short code is too long" },
+					{
+						field: "customShortCode",
+						message: "Custom short code is too long",
+					},
 					400
 				);
 			}
@@ -100,7 +112,10 @@ app.post("/shorten-url", async (c) => {
 
 			if (records.length > 0) {
 				return c.json(
-					{ message: "Custom short code already exists" },
+					{
+						field: "customShortCode",
+						message: "Custom short code already exists",
+					},
 					400
 				);
 			}
