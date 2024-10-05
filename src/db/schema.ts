@@ -6,6 +6,5 @@ export const shortCodes = mysqlTable("shortcodes", {
 	password: varchar("password", { length: 255 }),
 	expirationDate: timestamp("expirationDate"),
 	createdAt: timestamp("createdAt")
-		.notNull()
-		.defaultNow(),
+		.notNull(),
 });

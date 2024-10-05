@@ -53,7 +53,7 @@ app.post("/get-destination", async (c) => {
 
 		return c.json({ destination: record.destination });
 	} catch (error) {
-		console.error("🚀 ~ app.post ~ error:", error)
+		console.error(error);
 		return c.json({ message: "Unexpected error occurred" }, 500);
 	}
 });
@@ -63,11 +63,12 @@ app.post("/shorten-url", async (c) => {
 		const { destination, customShortCode, password, expirationDate } =
 			await c.req.json();
 
-		const record: Omit<Record, "createdAt"> = {
+		const record: Record = {
 			destination: "",
 			shortCode: "",
 			password: null,
 			expirationDate: null,
+			createdAt: new Date(),
 		};
 
 		if (!destination) {
